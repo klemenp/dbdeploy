@@ -3,13 +3,16 @@ package com.dbdeploy;
 import com.dbdeploy.database.DelimiterType;
 import com.dbdeploy.database.LineEnding;
 import com.dbdeploy.exceptions.UsageException;
+import com.dbdeploy.logging.SimpleLogger;
 import org.apache.tools.ant.BuildException;
 import org.apache.tools.ant.Task;
+import org.apache.tools.ant.types.LogLevel;
 
 import java.io.File;
 
 public class AntTarget extends Task {
-	private DbDeploy dbDeploy = new DbDeploy();
+	private final DbDeploy dbDeploy;
+    private final AntLogger logger;
 
 	private static String ANT_USAGE = "\n\nDbdeploy Ant Task Usage"
 			+ "\n======================="
@@ -31,12 +34,17 @@ public class AntTarget extends Task {
 			+ "\n\t/>"
 			+ "\n\n* - Indicates mandatory parameter";
 
-	@Override
+    public AntTarget() {
+        logger = new AntLogger(this);
+        dbDeploy = new DbDeploy(logger);
+    }
+
+    @Override
 	public void execute() throws BuildException {
 		try {
 			dbDeploy.go();
 		} catch (UsageException ex) {
-			System.err.println(ANT_USAGE);
+			logger.error(getClass(), ANT_USAGE);
 			throw new BuildException(ex.getMessage());
 		} catch (Exception ex) {
 			throw new BuildException(ex);
@@ -102,5 +110,6 @@ public class AntTarget extends Task {
 	public void setLineEnding(LineEnding lineEnding) {
 		dbDeploy.setLineEnding(lineEnding);
 	}
+
 }
 

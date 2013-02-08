@@ -45,7 +45,7 @@ public class ScriptGenerationTest {
 
 		final StubSchemaManager schemaManager = new StubSchemaManager();
 		ChangeScriptApplier applier = new TemplateBasedApplier(writer, syntaxName, "changelog", ";", DelimiterType.normal, null);
-		Controller controller = new Controller(changeScriptRepository, schemaManager, applier, null);
+		Controller controller = new Controller(changeScriptRepository, schemaManager, applier, null, logger);
 
 		controller.processChangeScripts(Long.MAX_VALUE);
 

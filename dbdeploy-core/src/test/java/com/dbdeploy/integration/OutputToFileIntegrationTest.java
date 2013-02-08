@@ -18,7 +18,7 @@ public class OutputToFileIntegrationTest {
 
 		File outputFile = File.createTempFile("success",".sql");
 
-		DbDeploy dbDeploy = new DbDeploy();
+		DbDeploy dbDeploy = new DbDeploy(logger);
 		db.applyDatabaseSettingsTo(dbDeploy);
 		dbDeploy.setScriptdirectory(findScriptDirectory("src/it/db/deltas"));
 		dbDeploy.setOutputfile(outputFile);
@@ -40,7 +40,7 @@ public class OutputToFileIntegrationTest {
 		Database db = new Database("failure_recovery_test");
 		db.createSchemaVersionTable();
 
-		DbDeploy dbDeploy = new DbDeploy();
+		DbDeploy dbDeploy = new DbDeploy(logger);
 		db.applyDatabaseSettingsTo(dbDeploy);
 		dbDeploy.setScriptdirectory(findScriptDirectory("src/it/db/invalid_deltas"));
 		dbDeploy.setOutputfile(outputFile);
@@ -80,7 +80,7 @@ public class OutputToFileIntegrationTest {
 
         File outputFile = File.createTempFile("changelog_success", ".sql");
 
-        DbDeploy dbDeploy = new DbDeploy();
+        DbDeploy dbDeploy = new DbDeploy(logger);
         db.applyDatabaseSettingsTo(dbDeploy);
         dbDeploy.setScriptdirectory(findScriptDirectory("src/it/db/deltas"));
         dbDeploy.setOutputfile(outputFile);
@@ -99,7 +99,7 @@ public class OutputToFileIntegrationTest {
 
 		File outputFile = File.createTempFile("high_number_test",".sql");
 
-		DbDeploy dbDeploy = new DbDeploy();
+		DbDeploy dbDeploy = new DbDeploy(logger);
 		db.applyDatabaseSettingsTo(dbDeploy);
 		dbDeploy.setScriptdirectory(findScriptDirectory("src/it/db/high_numbers"));
 		dbDeploy.setOutputfile(outputFile);

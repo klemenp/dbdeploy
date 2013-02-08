@@ -116,8 +116,11 @@ public abstract class AbstractDbDeployMojo extends AbstractMojo {
      */
     protected Long lastChangeToApply;
 
+    protected MojoLogger mojoLogger;
+
     protected DbDeploy getConfiguredDbDeploy() {
-        DbDeploy dbDeploy = new DbDeploy();
+        mojoLogger = new MojoLogger(this.getLog());
+        DbDeploy dbDeploy = new DbDeploy(logger);
         dbDeploy.setScriptdirectory(scriptdirectory);
         dbDeploy.setDriver(driver);
         dbDeploy.setUrl(url);

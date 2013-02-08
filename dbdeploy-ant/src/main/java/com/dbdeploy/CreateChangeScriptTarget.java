@@ -14,7 +14,8 @@ import org.apache.tools.ant.Task;
  * @author jbogan
  */
 public class CreateChangeScriptTarget extends Task {
-    final ChangeScriptCreator changeScriptCreator = new ChangeScriptCreator();
+    final ChangeScriptCreator changeScriptCreator;
+    private final AntLogger logger;
 
     private static String ANT_USAGE = "\n\nDbdeploy Create Script Ant Task Usage"
             + "\n======================="
@@ -24,12 +25,17 @@ public class CreateChangeScriptTarget extends Task {
             + "\n\t/>"
             + "\n\n* - Indicates mandatory parameter";
 
+    public CreateChangeScriptTarget() {
+        logger = new AntLogger(this);
+        changeScriptCreator = new ChangeScriptCreator(logger);
+    }
+
     @Override
     public void execute() throws BuildException {
         try {
             changeScriptCreator.go();
         } catch (UsageException ex) {
-            System.err.println(ANT_USAGE);
+            logger.error(getClass(), ANT_USAGE);
             throw new BuildException(ex.getMessage());
         } catch (Exception ex) {
             throw new BuildException(ex);

@@ -14,7 +14,7 @@ import static org.mockito.Mockito.*;
 public class DbDeployCommandLineParserTest {
     UserInputReader userInputReader = mock(UserInputReader.class);
 
-	private final DbDeploy dbDeploy = new DbDeploy();
+	private final DbDeploy dbDeploy = new DbDeploy(logger);
 	private final DbDeployCommandLineParser parser = new DbDeployCommandLineParser(userInputReader);
 
 	@Test

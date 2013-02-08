@@ -30,7 +30,7 @@ public class ControllerTest {
 
     @Before
 	public void setUp() {
-		controller = new Controller(availableChangeScriptsProvider, appliedChangesProvider, applier, undoApplier);
+		controller = new Controller(availableChangeScriptsProvider, appliedChangesProvider, applier, undoApplier, logger);
 
 		change1 = new ChangeScript(1);
 		change2 = new ChangeScript(2);
@@ -54,7 +54,7 @@ public class ControllerTest {
 
 	@Test
 	public void shouldNotCrashWhenPassedANullUndoApplier() throws Exception {
-		controller = new Controller(availableChangeScriptsProvider, appliedChangesProvider, applier, null);
+		controller = new Controller(availableChangeScriptsProvider, appliedChangesProvider, applier, null, logger);
 
 		when(appliedChangesProvider.getAppliedChanges()).thenReturn(Collections.<Long>emptyList());
 

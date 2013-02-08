@@ -1,6 +1,7 @@
 package com.dbdeploy.scripts;
 
 import com.dbdeploy.exceptions.UnrecognisedFilenameException;
+import com.dbdeploy.logging.SimpleLogger;
 
 import java.io.File;
 import java.io.IOException;
@@ -11,14 +12,16 @@ public class DirectoryScanner {
 	
 	private final FilenameParser filenameParser = new FilenameParser();
 	private final String encoding;
-	
-	public DirectoryScanner(String encoding) {
+    private final SimpleLogger logger;
+
+    public DirectoryScanner(String encoding, SimpleLogger logger) {
         this.encoding = encoding;
+        this.logger = logger;
     }
 	
 	public List<ChangeScript> getChangeScriptsForDirectory(File directory)  {
 		try {
-			System.err.println("Reading change scripts from directory " + directory.getCanonicalPath() + "...");
+			logger.info(getClass(), "Reading change scripts from directory " + directory.getCanonicalPath() + "...");
 		} catch (IOException e1) {
 			// ignore
 		}

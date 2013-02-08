@@ -1,6 +1,7 @@
 package com.dbdeploy;
 
 import com.dbdeploy.exceptions.DbDeployException;
+import com.dbdeploy.logging.SimpleLogger;
 import com.dbdeploy.scripts.ChangeScript;
 
 import java.io.IOException;
@@ -14,21 +15,23 @@ public class Controller {
 	private final AppliedChangesProvider appliedChangesProvider;
 	private final ChangeScriptApplier changeScriptApplier;
 	private final ChangeScriptApplier undoScriptApplier;
+    private final SimpleLogger logger;
 
-	private final PrettyPrinter prettyPrinter = new PrettyPrinter();
+    private final PrettyPrinter prettyPrinter = new PrettyPrinter();
 
 	public Controller(AvailableChangeScriptsProvider availableChangeScriptsProvider,
-					  AppliedChangesProvider appliedChangesProvider,
-					  ChangeScriptApplier changeScriptApplier, ChangeScriptApplier undoScriptApplier) {
+                      AppliedChangesProvider appliedChangesProvider,
+                      ChangeScriptApplier changeScriptApplier, ChangeScriptApplier undoScriptApplier, SimpleLogger logger) {
 		this.availableChangeScriptsProvider = availableChangeScriptsProvider;
 		this.appliedChangesProvider = appliedChangesProvider;
 		this.changeScriptApplier = changeScriptApplier;
 		this.undoScriptApplier = undoScriptApplier;
-	}
+        this.logger = logger;
+    }
 
 	public void processChangeScripts(Long lastChangeToApply) throws DbDeployException, IOException {
 		if (lastChangeToApply != Long.MAX_VALUE) {
-			info("Only applying changes up and including change script #" + lastChangeToApply);
+			logger.info(getClass(), "Only applying changes up and including change script #" + lastChangeToApply);
 		}
 
 		List<ChangeScript> scripts = availableChangeScriptsProvider.getAvailableChangeScripts();
@@ -40,16 +43,16 @@ public class Controller {
         changeScriptApplier.apply(Collections.unmodifiableList(toApply));
 
         if (undoScriptApplier != null) {
-			info("Generating undo scripts...");
+			logger.info(getClass(), "Generating undo scripts...");
 			Collections.reverse(toApply);
             undoScriptApplier.apply(Collections.unmodifiableList(toApply));
         }
 	}
 
     private void logStatus(List<ChangeScript> scripts, List<Long> applied, List<ChangeScript> toApply) {
-		info("Changes currently applied to database:\n  " + prettyPrinter.format(applied));
-		info("Scripts available:\n  " + prettyPrinter.formatChangeScriptList(scripts));
-		info("To be applied:\n  " + prettyPrinter.formatChangeScriptList(toApply));
+		logger.info(getClass(), "Changes currently applied to database:\n  " + prettyPrinter.format(applied));
+		logger.info(getClass(), "Scripts available:\n  " + prettyPrinter.formatChangeScriptList(scripts));
+		logger.info(getClass(), "To be applied:\n  " + prettyPrinter.formatChangeScriptList(toApply));
 	}
 
 	private List<ChangeScript> identifyChangesToApply(Long lastChangeToApply, List<ChangeScript> scripts, List<Long> applied) {
@@ -65,9 +68,5 @@ public class Controller {
 		}
 
 		return result;
-	}
-
-	private void info(String string) {
-		System.err.println(string);
 	}
 }

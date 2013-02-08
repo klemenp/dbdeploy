@@ -9,6 +9,7 @@ import com.dbdeploy.database.QueryStatementSplitter;
 import com.dbdeploy.database.changelog.DatabaseSchemaVersionManager;
 import com.dbdeploy.database.changelog.QueryExecuter;
 import com.dbdeploy.exceptions.UsageException;
+import com.dbdeploy.logging.SimpleLogger;
 import com.dbdeploy.scripts.ChangeScriptRepository;
 import com.dbdeploy.scripts.DirectoryScanner;
 
@@ -32,7 +33,17 @@ public class DbDeploy {
 	private DelimiterType delimiterType = DelimiterType.normal;
 	private File templatedir;
 
-	public void setDriver(String driver) {
+    private final SimpleLogger logger;
+
+    public DbDeploy(SimpleLogger logger) {
+        this.logger = logger;
+    }
+
+    public SimpleLogger getLogger() {
+        return logger;
+    }
+
+    public void setDriver(String driver) {
 		this.driver = driver;
 	}
 
@@ -81,7 +92,7 @@ public class DbDeploy {
 	}
 
 	public void go() throws Exception {
-		System.err.println(getWelcomeString());
+		logger.info(getClass(), getWelcomeString());
 
 		validate();
 
@@ -93,7 +104,7 @@ public class DbDeploy {
 				new DatabaseSchemaVersionManager(queryExecuter, changeLogTableName);
 
 		ChangeScriptRepository changeScriptRepository =
-				new ChangeScriptRepository(new DirectoryScanner(encoding).getChangeScriptsForDirectory(scriptdirectory));
+				new ChangeScriptRepository(new DirectoryScanner(encoding, logger).getChangeScriptsForDirectory(scriptdirectory));
 
 		ChangeScriptApplier doScriptApplier;
 
@@ -106,7 +117,7 @@ public class DbDeploy {
 			splitter.setDelimiter(getDelimiter());
 			splitter.setDelimiterType(getDelimiterType());
 			splitter.setOutputLineEnding(lineEnding);
-			doScriptApplier = new DirectToDbApplier(queryExecuter, databaseSchemaVersionManager, splitter);
+			doScriptApplier = new DirectToDbApplier(queryExecuter, databaseSchemaVersionManager, splitter, logger);
 		}
 
 		ChangeScriptApplier undoScriptApplier = null;
@@ -117,7 +128,7 @@ public class DbDeploy {
 
 		}
 
-		Controller controller = new Controller(changeScriptRepository, databaseSchemaVersionManager, doScriptApplier, undoScriptApplier);
+		Controller controller = new Controller(changeScriptRepository, databaseSchemaVersionManager, doScriptApplier, undoScriptApplier, logger);
 
 		controller.processChangeScripts(lastChangeToApply);
 

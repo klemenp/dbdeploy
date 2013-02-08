@@ -9,7 +9,7 @@ import org.junit.Test;
 import java.io.File;
 
 public class DbDeployTest {
-	private final DbDeploy dbDeploy = new DbDeploy();
+	private final DbDeploy dbDeploy = new DbDeploy(logger);
 
 	@Before
 	public void setSensibleDefaultValuesForAllParameters() {

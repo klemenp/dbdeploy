@@ -1,6 +1,8 @@
 package com.dbdeploy.scripts;
 
 import com.dbdeploy.exceptions.UsageException;
+import com.dbdeploy.logging.SimpleLogger;
+
 import java.io.File;
 import java.io.IOException;
 import java.text.DateFormat;
@@ -17,13 +19,15 @@ import java.util.Date;
  * @author jbogan
  */
 public class ChangeScriptCreator {
+    private final SimpleLogger logger;
     private String changeScriptSuffix = ".sql";
     private String changeScriptTimestampFormat = "yyyyMMddHHmmss";
     private String scriptDescription;
     private File scriptDirectory;
     private DateFormat dateFormatter;
 
-    public ChangeScriptCreator() {
+    public ChangeScriptCreator(SimpleLogger logger) {
+        this.logger = logger;
         dateFormatter = new SimpleDateFormat(changeScriptTimestampFormat);
     }
 
@@ -75,33 +79,4 @@ public class ChangeScriptCreator {
         this.scriptDirectory = scriptDirectory;
     }
 
-    public static void main(String[] args) {
-        ChangeScriptCreator creator = new ChangeScriptCreator();
-        
-        try {
-            parseArguments(args, creator);
-            creator.go();
-        } catch (UsageException ex) {
-            System.err.println("ERROR: " + ex.getMessage());
-            System.err.println("Usage: java " + creator.getClass().getName() + " scriptDirectory [scriptName]");
-        } catch (Exception ex) {
-            System.err.println("Failed to create script: " + ex);
-            ex.printStackTrace();
-            System.exit(2);
-        }
-
-        System.exit(0);
-    }
-
-    private static void parseArguments(String[] args, ChangeScriptCreator creator) {
-        if (args.length >= 1) {
-            final String scriptDirectoryPath = args[0];
-            creator.setScriptDirectory(new File(scriptDirectoryPath));
-        }
-
-        if (args.length >= 2) {
-            final String scriptDescription = args[1];
-            creator.setScriptDescription(scriptDescription);
-        }
-    }
 }
