@@ -11,8 +11,6 @@ ${script.undoContent}
 
 DELETE FROM ${changeLogTableName} WHERE change_number = ${script.id?c}${separator}${delimiter}
 
-COMMIT${separator}${delimiter}
-
 -- END UNDO OF CHANGE SCRIPT ${script}
 
 [/#list]

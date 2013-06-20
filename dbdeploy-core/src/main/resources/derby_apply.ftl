@@ -12,8 +12,6 @@ ${script.content}
 INSERT INTO ${changeLogTableName} (change_number, complete_dt, applied_by, description)
  VALUES (${script.id?c}, CURRENT_TIMESTAMP, CURRENT_USER, '${script.description}')${separator}${delimiter}
 
-COMMIT${separator}${delimiter}
-
 -- END CHANGE SCRIPT ${script}
 
 [/#list]
